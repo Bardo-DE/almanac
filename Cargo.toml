@@ -30,7 +30,7 @@ edition = "2024"
 license = "MIT OR Apache-2.0"
 # What quire declares; the toolchain itself is pinned in rust-toolchain.toml.
 rust-version = "1.92"
-repository = "https://github.com/PoHsuanLai/almanac"
+repository = "https://github.com/Bardo-DE/almanac"
 publish = false
 
 [workspace.dependencies]
@@ -60,20 +60,20 @@ almanac-fake    = { path = "crates/almanac-fake" }
 # is no cycle. memoryd reaches inferd through inferd-client (from steward, by git; its tests serve a fake
 # inferd with steward-dbus) and porter's registry of Spaces through porter-client over porter-client-dbus;
 # almanac never names stoker itself (porter-infer does, by its own git rev).
-porter-core     = { git = "https://github.com/PoHsuanLai/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
-porter-ids      = { git = "https://github.com/PoHsuanLai/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
-porter-capability = { git = "https://github.com/PoHsuanLai/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
-porter-match    = { git = "https://github.com/PoHsuanLai/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
-porter-wire     = { git = "https://github.com/PoHsuanLai/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
-prov            = { git = "https://github.com/PoHsuanLai/prov", rev = "03c855eb4c80779522cf712075dead4a761adc4f" }
-porter-infer    = { git = "https://github.com/PoHsuanLai/steward", rev = "baedbb000103c7dcc3c73d5f2871c7a1e9dfd33e" }
-inferd-client   = { git = "https://github.com/PoHsuanLai/steward", rev = "baedbb000103c7dcc3c73d5f2871c7a1e9dfd33e" }
-steward-dbus    = { git = "https://github.com/PoHsuanLai/steward", rev = "baedbb000103c7dcc3c73d5f2871c7a1e9dfd33e" }
-porter-client   = { git = "https://github.com/PoHsuanLai/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
-porter-client-dbus = { git = "https://github.com/PoHsuanLai/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
-porter-dbus     = { git = "https://github.com/PoHsuanLai/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
-porter-daemon   = { git = "https://github.com/PoHsuanLai/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
-porter-callers  = { git = "https://github.com/PoHsuanLai/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-core     = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-ids      = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-capability = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-match    = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-wire     = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+prov            = { git = "https://github.com/Bardo-DE/prov", rev = "5106c0c2f502711411ba82c72b32c7e543b9cc4d" }
+porter-infer    = { git = "https://github.com/Bardo-DE/steward", rev = "baedbb000103c7dcc3c73d5f2871c7a1e9dfd33e" }
+inferd-client   = { git = "https://github.com/Bardo-DE/steward", rev = "baedbb000103c7dcc3c73d5f2871c7a1e9dfd33e" }
+steward-dbus    = { git = "https://github.com/Bardo-DE/steward", rev = "baedbb000103c7dcc3c73d5f2871c7a1e9dfd33e" }
+porter-client   = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-client-dbus = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-dbus     = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-daemon   = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-callers  = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
 
 # From quire's pinned block (`docs/workspace-deps.toml`), copied verbatim: only the lines almanac
 # names itself.
@@ -112,3 +112,29 @@ tempfile = "3"
 [workspace.lints.rust]
 unsafe_code = "deny"
 missing_debug_implementations = "warn"
+
+# Pinned dependencies still name these moved repos by their old PoHsuanLai URLs. The patches read
+# them at the same revs from github.com/Bardo-DE, so each crate has one source and nothing is
+# fetched through the old URLs. Delete a block when no pinned rev names that URL any more.
+[patch."https://github.com/PoHsuanLai/peephole"]
+peephole-bus = { git = "https://github.com/Bardo-DE/peephole", tag = "v0.1.11" }
+peephole-core = { git = "https://github.com/Bardo-DE/peephole", tag = "v0.1.11" }
+peephole = { git = "https://github.com/Bardo-DE/peephole", tag = "v0.1.11" }
+
+[patch."https://github.com/PoHsuanLai/porter"]
+porter-callers = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-capability = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-core = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-dbus-macros = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-dbus = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-ids = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-match = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-tailscale = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+porter-wire = { git = "https://github.com/Bardo-DE/porter", rev = "f406782b90b67f62f0f14ec5e78aec8992b5d709" }
+
+[patch."https://github.com/PoHsuanLai/stoker"]
+cua-action = { git = "https://github.com/Bardo-DE/stoker", rev = "98621a2f3730ea1c3e0b8abce00f8e4fe91fe7d7" }
+genai-names = { git = "https://github.com/Bardo-DE/stoker", rev = "98621a2f3730ea1c3e0b8abce00f8e4fe91fe7d7" }
+model-provider = { git = "https://github.com/Bardo-DE/stoker", rev = "98621a2f3730ea1c3e0b8abce00f8e4fe91fe7d7" }
+vision-prep = { git = "https://github.com/Bardo-DE/stoker", rev = "98621a2f3730ea1c3e0b8abce00f8e4fe91fe7d7" }
+

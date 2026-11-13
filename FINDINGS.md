@@ -224,8 +224,8 @@ Nothing below is built; the interfaces it will use are.
 - **porter's `prov::Label` constructors and `Label::join` are stubs** until porter's fill, so
   almanac's tests build labels from their fields and `check_draft` is a stub with them.
 - **Cross-repo dependencies are git deps at pinned revs** (`porter-core`, `prov`, `porter-client`,
-  `porter-client-dbus`, `porter-dbus` from `https://github.com/PoHsuanLai/porter`; `porter-infer`,
-  `inferd-client`, `steward-dbus` from `https://github.com/PoHsuanLai/steward`), so a plain `git clone`
+  `porter-client-dbus`, `porter-dbus` from `https://github.com/Bardo-DE/porter`; `porter-infer`,
+  `inferd-client`, `steward-dbus` from `https://github.com/Bardo-DE/steward`), so a plain `git clone`
   builds with no sibling checkout (quire `CONSUMING.md` section 1). The URL spelling and the rev
   match porter's own pins of stoker and quire, so cargo sees one copy of each crate. For work that
   spans repos, override the pin locally with a `[patch]` that is never committed: put it in a
@@ -233,12 +233,12 @@ Nothing below is built; the interfaces it will use are.
   directory; this repo's own `.cargo/config.toml` is tracked), for example
 
   ```toml
-  [patch."https://github.com/PoHsuanLai/porter"]
+  [patch."https://github.com/Bardo-DE/porter"]
   porter-core = { path = "/path/to/porter/crates/porter-core" }
   # one line per porter crate almanac names; add the same for stoker/quire crates if the
   # local porter checkout pins a different rev than the one in Cargo.lock
 
-  [patch."https://github.com/PoHsuanLai/prov"]
+  [patch."https://github.com/Bardo-DE/prov"]
   prov = { path = "/path/to/prov/prov" }
   ```
 
