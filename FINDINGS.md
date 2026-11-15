@@ -7,8 +7,8 @@ watch, almanac-service) removed 53 and the bus and daemon wave (F2 memoryd, belo
 
 ## Type rules and twin removal (2026-10-28)
 
-CONVENTIONS rule 7 is now the shared plain-Rust rule (bool allowed; one fact, one type; `Result`/`Option`
-for two-way outcomes; growing sets are data; newtypes only with a rule); rule 2 allows `Box<dyn Trait>` for
+The plain-Rust rule is now shared (bool allowed; one fact, one type; `Result`/`Option`
+for two-way outcomes; growing sets are data; newtypes only with a rule); `Box<dyn Trait>` is allowed for
 configuration-picked implementations. Enum audit lane E-A1: done A1 (`SpaceVault` once, in memfiles), A2 (store
 uses core's `IndexView`, `StaleWhy`, `DegradedWhy`, `Count`), A3 (`allowed` returns `Result<(), Refusal>`), A4
 phase 1 (`TrustTier` is `Integrity`), A5 (`HitWhy` is `RecallWhy`), A7 (`Enforcement` is `Confinement`), and P7
@@ -263,7 +263,7 @@ Decisions the fill made where the frozen text left room:
   `Index::search` holds a shared borrow of SQLite connections across the query embedding, which makes
   the future `!Send`. The facet filter (`over`, trust) is the `kind`/`trust` columns of `docs`.
 - **Fact ids and run ids** take their random bits from a keyed hash of the Space's digest subkey, a
-  counter and the time (CONVENTIONS 4: nothing ambient).
+  counter and the time (nothing ambient).
 - **Proposals**: the shell's are the person's own words (Trusted); the router's are planner text
   (Untrusted, so they wait in `pending/`); both are joined with the labels of what they cite. `desktop`
   refuses anything `desktop_admits` does not `Admit` (`Invalid`).
@@ -544,7 +544,7 @@ cuad, reads the person's events during the takeover (`Recent`, a `Router` call) 
 
 - **`landlock` is not in quire's pinned dependency block** (`docs/workspace-deps.toml`): almanac's
   `Cargo.toml` names `landlock = "0.4"` (0.4.7 in the lockfile, MIT OR Apache-2.0) ahead of it. The
-  line joins quire's file first (CONVENTIONS "dependencies"). Quire's session owns it.
+  line joins quire's file first. Quire's session owns it.
 - **The lock signal against a real Secret Service** is unproven: gnome-keyring and KWallet differ in
   which object carries `Locked` (the collection is the documented one). Needs a real session.
 

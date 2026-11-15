@@ -145,7 +145,7 @@ impl<B: Backend> Open<B> {
     }
 
     /// Entropy for an id: a keyed hash over the Space's digest subkey, a counter, the time, the
-    /// backend's random bytes and what the id is for. No ambient randomness (CONVENTIONS 4: the
+    /// backend's random bytes and what the id is for. No ambient randomness (the
     /// bytes come through `Backend::random`); ids from two machines differ because their Space
     /// keys do, and a restarted daemon's differ because its random bytes do.
     pub(crate) fn entropy(&mut self, cx: &Cx<'_, B>, what: &[u8]) -> [u8; 10] {
