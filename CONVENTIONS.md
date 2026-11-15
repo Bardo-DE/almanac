@@ -1,61 +1,28 @@
 # Conventions
 
-almanac follows the program's shared conventions, whose text lives in quire's `CONVENTIONS.md`
-(identical in quire, sill, shell-host, palmrest and detent): types, traits, effects, errors,
-tests, comments, change discipline, borrowing. Read it first. `ARCHITECTURE.md` here adds the
-crate map, the one-home table, the traits, the recipes and the repo rules; where the two
-disagree, `ARCHITECTURE.md` wins for almanac. porter's `CONVENTIONS.md` is the model this one
-copies; the rules below are the same ones with almanac's reasons.
+This repo follows the published Rust guides instead of a house style:
 
-What almanac adds or decides differently, each with its reason:
+- [Rust Style Guide](https://doc.rust-lang.org/style-guide/): formatting. `cargo fmt` applies it.
+- [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/): naming, API shape,
+  documentation, interoperability.
+- [Microsoft Pragmatic Rust Guidelines](https://microsoft.github.io/rust-guidelines/): libraries,
+  applications, errors, safety, performance, documentation.
 
-1. **Closed sets are enums without `Word`.** almanac does not depend on quire's `ds-core`:
-   memory must build for mailo on macOS and Windows and for other desktops, below the design
-   system. A unit enum's stable slug is its serde `snake_case` form (the same slug in files, on
-   the bus and in kind tags): the `slug_enum!` macro in `almanac-core` declares the enum, its
-   serde names and `slug()`/`ALL` from one list, so they cannot differ. Enums with data
-   (`FileChange`, `MemoryOp`) keep one `slug()` match beside the type. Labels a person reads
-   belong to the UI that draws them (sill, detent): memoryd never sends prose.
-2. **Async seams use `-> impl Future<Output = ...> + Send`** (return-position `impl Trait`),
-   so implementations write `async fn` and every future can cross a multi-threaded runtime.
-   Closed sets of implementations are enums implementing the trait (memfiles' `SpaceVault`),
-   or a `Backend` trait's associated types. `Box<dyn Trait>` is fine when the implementation is
-   picked from configuration at run time.
-3. **`todo!()` bodies exist only while an interface is frozen and its behaviour is not
-   built.** Each one is listed in `FINDINGS.md` with the work that removes it. This departs
-   from the shared rule "no `todo!()` stub on master"; the freeze decides when it lands.
-4. **Nothing ambient below the daemons.** The clock (`almanac_service::Clock`), the key store
-   (`KeyStore`), the vault (`Vault`), the embedder, the consolidator, the nonce
-   (`almanac_seal::Nonce`), the random bits of a fact id and every directory (`Dirs`) are passed
-   in; only `almanac_local::SystemClock` reads the system clock, and only `memoryd` reads the environment or the bus. Tests never touch
-   a bus, a keyring, the network or the real XDG directories: scratch directories
-   (`almanac-fake::Scratch`) and in-memory seams.
-5. **Everything stored or sent is a pinned form.** A format (the event header bytes, the
-   sealed file, the topic file and its trailer, the export tar, the key derivation contexts,
-   the plan digest) has a golden test; changing one is a format bump, not a refactor.
-6. **User text never shows in `Debug`.** `UserText`, `FactText`, `ThingView` and key types
-   redact; tests assert it.
-7. **Plain Rust types.** A `bool` is fine for a field, a return value, a local or a private
-   function. Use an enum instead only when a public function would read as `f(true, false)`, a
-   third state is realistic, or the value is written to disk or the bus where a named word reads
-   better (`Lock`, `Desktop`, `Power`, `SourceState`, `VerificationKey`).
-   * **One fact, one type.** No mirror enums across crates (`X`/`XKind`/`XWire`/`XState`); the
-     lower crate owns the type and the others import it. A field-less view of an enum is a
-     method, not a second declaration.
-   * **Two-way outcomes are `Result` or `Option`**, not a two-arm enum. "Absent or one real
-     thing" is `Option<T>`.
-   * **Growing sets are data:** a string id or a shipped file, not a variant list. Enums are for
-     closed sets the code branches on.
-   * **Newtypes only with a rule:** parsed or validated, a unit, or an id that must not be mixed
-     with another. Otherwise the plain type. A single-variant enum is not a type.
-8. **One integration-test executable per crate.** Cargo links every file directly under `tests/`
-   into its own executable, and each one statically links the crate's whole dependency graph
-   (SQLCipher, zbus, tokio and the rest), so a build directory grows with the number of files.
-   Integration tests are therefore modules of `tests/it/main.rs` (`mod <topic>;`), shared
-   helpers are `tests/it/support/` modules (`use crate::support::...`), and goldens stay in
-   `tests/golden/`. A separate target (`tests/<name>.rs` plus `[[test]]` in the crate's
-   `Cargo.toml`, with a comment in `tests/it/main.rs`) needs a stated reason: it changes the
-   environment (`set_var`, a panic hook, the current dir), holds a process-wide singleton the
-   others must not share, needs its own `required-features`, or has `harness = false`. A new
-   `tests/*.rs` without that reason is a mistake. Dependencies build without debug info
-   (`[profile.dev.package."*"]` in `.cargo/config.toml`).
+## Design
+
+On top of the guides, write Rust roughly the way you would write Haskell:
+
+1. **Push IO to the edges.** Decisions live in pure functions: data in, data out, for example
+   `step(state, event) -> (state, effects)`. A thin shell reads the world, calls the core and
+   carries out the effects it returns. No IO, clocks or threads inside the core.
+   See [Functional Core, Imperative Shell](https://www.destroyallsoftware.com/screencasts/catalog/functional-core-imperative-shell)
+   and [sans-IO](https://firezone.dev/blog/sans-io).
+2. **Let types carry the facts.** Parse input once, at the edge, into types that only hold valid
+   values, and don't check again past it. Use enums so impossible states can't be written.
+   See [Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)
+   and [Type-Driven API Design in Rust](https://willcrichton.net/rust-api-type-patterns/).
+3. **Judgement, not rules.** These are directions, not quotas. A `bool`, a `String` or a plain
+   struct is fine when a type would add nothing. Don't add a newtype or a state machine that no
+   bug and no reader needs.
+
+The repo's own structure (crates, layers, where each concept lives) is in ARCHITECTURE.md.
